@@ -1,0 +1,8 @@
+# Pinned for reproducibility. PaddleOCR on CPU keeps the GPU free for the LLM.
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-multipart==0.0.12
+paddleocr==2.7.3
+paddlepaddle==2.6.1
+opencv-python-headless==4.10.0.84
+numpy==1.26.4

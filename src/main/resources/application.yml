@@ -1,0 +1,66 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: never   # never leak a stacktrace to the caller (spec section 7)
+    include-message: always
+
+spring:
+  application:
+    name: katixo-ai-service
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/katixo_ai
+    username: katixo
+    password: katixo
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+logging:
+  level:
+    com.katixo.ai: INFO
+
+# ---------------------------------------------------------------------------
+# Katixo AI - everything tunable lives here. Code is model-agnostic.
+# ---------------------------------------------------------------------------
+katixo:
+  ai:
+    privacy:
+      # Refuse to start if any AI endpoint is not localhost. This is the offline guarantee.
+      enforce-localhost: true
+    ollama:
+      base-url: http://localhost:11434
+      # DECISION(8GB default): 7B text model. On a 4060 Ti 16GB you may raise this to a 14B-class
+      # instruct model (see CLAUDE.md). Pull quantized: `ollama pull qwen2.5:7b-instruct` (Q4_K_M).
+      text-model: qwen2.5:7b-instruct
+      vision-model: minicpm-v
+      temperature: 0.0
+      seed: 42
+      keep-alive: 5m
+      timeout-seconds: 120
+      format: json
+    ocr:
+      base-url: http://localhost:8000
+      # Route to the VLM fallback only when the document's OCR confidence is below this.
+      threshold: 0.75
+      timeout-seconds: 60
+    preprocess:
+      pdf-dpi: 300
+      max-edge-px: 2200
+      deskew-max-angle-deg: 10.0
+    review:
+      # Flag for a human if overall confidence is below this (or any exception exists).
+      threshold: 0.80
+    prompts:
+      version: v1
+    eval:
+      golden-dir: eval/golden

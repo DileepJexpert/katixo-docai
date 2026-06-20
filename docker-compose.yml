@@ -1,0 +1,63 @@
+# Katixo AI - local dependencies only (spec section 9): Postgres + Ollama + OCR sidecar.
+#
+# Everything is published to 127.0.0.1 ONLY, so nothing is reachable off-host and the Spring app
+# (run natively on the host - see README) reaches all of them via localhost. That keeps the
+# privacy guarantee (katixo.ai.privacy.enforce-localhost=true) intact by construction.
+#
+# The Spring service is intentionally NOT in this compose file: on the target RTX 4060 box it runs
+# natively (best GPU/Ollama performance) and talks to these published localhost ports.
+name: katixo-ai
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: katixo_ai
+      POSTGRES_USER: katixo
+      POSTGRES_PASSWORD: katixo
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U katixo -d katixo_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    # GPU passthrough for the RTX 4060 (8 GB). Requires the NVIDIA Container Toolkit on the host.
+    # Remove this `deploy` block to run Ollama on CPU (slow) if you have no GPU.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ocr-sidecar:
+    build: ./ocr-sidecar
+    ports:
+      - "127.0.0.1:8000:8000"
+    # PaddleOCR runs on CPU on purpose, so the GPU's 8 GB VRAM stays free for the LLM
+    # (spec section 6: one large model resident at a time).
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  pgdata:
+  ollama:

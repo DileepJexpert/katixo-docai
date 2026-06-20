@@ -1,0 +1,11 @@
+Your previous response was not valid against the required schema and must be corrected.
+
+ERROR(S):
+{{ERROR}}
+
+YOUR PREVIOUS OUTPUT:
+{{PREVIOUS_OUTPUT}}
+
+Fix ONLY what is necessary to make the output a single valid JSON object matching the schema.
+Do not change values that were correct. Do not invent values - use null where data is unknown.
+Output the corrected JSON object ONLY. No markdown, no commentary.

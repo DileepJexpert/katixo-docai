@@ -1,0 +1,41 @@
+{
+  "docType": "INVOICE",
+  "header": {
+    "supplierName": "MediSupply Wholesale Pvt Ltd",
+    "supplierGstin": "06LMNOP9012Q1Z2",
+    "invoiceNumber": "MS-2024-9931",
+    "invoiceDate": "2024-06-02",
+    "subTotal": 4500.00,
+    "cgst": null,
+    "sgst": null,
+    "igst": 810.00,
+    "roundOff": 0.00,
+    "grandTotal": 5310.00,
+    "currency": "INR"
+  },
+  "lineItems": [
+    {
+      "description": "Surgical Gloves",
+      "hsn": "4015",
+      "qty": 10.00,
+      "uom": "PKT",
+      "rate": 200.00,
+      "discount": 0.00,
+      "taxableValue": 2000.00,
+      "gstRate": 18.00,
+      "lineTotal": 2360.00
+    },
+    {
+      "description": "Face Mask N95",
+      "hsn": "6307",
+      "qty": 100.00,
+      "uom": "PCS",
+      "rate": 25.00,
+      "discount": 0.00,
+      "taxableValue": 2500.00,
+      "gstRate": 18.00,
+      "lineTotal": 2950.00
+    }
+  ],
+  "expectedExceptions": []
+}

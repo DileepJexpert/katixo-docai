@@ -1,0 +1,30 @@
+{
+  "docType": "BILL",
+  "header": {
+    "supplierName": "Gokul Dairy Products",
+    "supplierGstin": "33UVWXY3456R1Z8",
+    "invoiceNumber": "GDP/0455",
+    "invoiceDate": "2024-09-21",
+    "subTotal": 12800.00,
+    "cgst": 320.00,
+    "sgst": 320.00,
+    "igst": null,
+    "roundOff": 0.00,
+    "grandTotal": 13440.00,
+    "currency": "INR"
+  },
+  "lineItems": [
+    {
+      "description": "Milk Powder 1kg",
+      "hsn": "0402",
+      "qty": 40.00,
+      "uom": "PKT",
+      "rate": 320.00,
+      "discount": 0.00,
+      "taxableValue": 12800.00,
+      "gstRate": 5.00,
+      "lineTotal": 13440.00
+    }
+  ],
+  "expectedExceptions": []
+}

@@ -1,0 +1,41 @@
+{
+  "docType": "INVOICE",
+  "header": {
+    "supplierName": "Sri Balaji Pharma Distributors",
+    "supplierGstin": "29ABCDE1234F1ZW",
+    "invoiceNumber": "SBP/24-25/00187",
+    "invoiceDate": "2024-05-14",
+    "subTotal": 8950.00,
+    "cgst": 537.00,
+    "sgst": 537.00,
+    "igst": null,
+    "roundOff": 0.00,
+    "grandTotal": 10024.00,
+    "currency": "INR"
+  },
+  "lineItems": [
+    {
+      "description": "Paracetamol 500mg",
+      "hsn": "3004",
+      "qty": 100.00,
+      "uom": "BOX",
+      "rate": 45.00,
+      "discount": 0.00,
+      "taxableValue": 4500.00,
+      "gstRate": 12.00,
+      "lineTotal": 5040.00
+    },
+    {
+      "description": "Amoxicillin 250mg",
+      "hsn": "3004",
+      "qty": 50.00,
+      "uom": "BOX",
+      "rate": 90.00,
+      "discount": 50.00,
+      "taxableValue": 4450.00,
+      "gstRate": 12.00,
+      "lineTotal": 4984.00
+    }
+  ],
+  "expectedExceptions": []
+}

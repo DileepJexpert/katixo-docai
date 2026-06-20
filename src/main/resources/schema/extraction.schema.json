@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://katixo.com/schema/extraction.schema.json",
+  "title": "Katixo document extraction",
+  "description": "Strict schema for the JSON the local LLM must return. Missing values MUST be null.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["header", "lineItems"],
+  "properties": {
+    "docType": {
+      "type": ["string", "null"],
+      "enum": ["INVOICE", "GRN", "BILL", null]
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supplierName", "supplierGstin", "invoiceNumber", "invoiceDate",
+        "subTotal", "cgst", "sgst", "igst", "roundOff", "grandTotal", "currency"
+      ],
+      "properties": {
+        "supplierName": { "type": ["string", "null"] },
+        "supplierGstin": { "type": ["string", "null"] },
+        "invoiceNumber": { "type": ["string", "null"] },
+        "invoiceDate": { "type": ["string", "null"], "description": "YYYY-MM-DD" },
+        "subTotal": { "type": ["number", "null"] },
+        "cgst": { "type": ["number", "null"] },
+        "sgst": { "type": ["number", "null"] },
+        "igst": { "type": ["number", "null"] },
+        "roundOff": { "type": ["number", "null"] },
+        "grandTotal": { "type": ["number", "null"] },
+        "currency": { "type": ["string", "null"] }
+      }
+    },
+    "lineItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "description", "hsn", "qty", "uom", "rate",
+          "discount", "taxableValue", "gstRate", "lineTotal"
+        ],
+        "properties": {
+          "description": { "type": ["string", "null"] },
+          "hsn": { "type": ["string", "null"] },
+          "qty": { "type": ["number", "null"] },
+          "uom": { "type": ["string", "null"] },
+          "rate": { "type": ["number", "null"] },
+          "discount": { "type": ["number", "null"] },
+          "taxableValue": { "type": ["number", "null"] },
+          "gstRate": { "type": ["number", "null"], "description": "percent, e.g. 18.0" },
+          "lineTotal": { "type": ["number", "null"] }
+        }
+      }
+    }
+  }
+}

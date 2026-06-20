@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:katixo;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+katixo:
+  ai:
+    privacy:
+      enforce-localhost: true   # keep the guarantee ON in tests; stubs run on 127.0.0.1
+    ollama:
+      # base-url is overridden per-test via @DynamicPropertySource to a loopback stub
+      text-model: qwen2.5:7b-instruct
+      vision-model: minicpm-v
+    ocr:
+      threshold: 0.75
+    review:
+      threshold: 0.80
