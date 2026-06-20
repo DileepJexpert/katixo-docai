@@ -64,3 +64,17 @@ katixo:
       version: v1
     eval:
       golden-dir: eval/golden
+    # Shared single-GPU guard: serializes GPU work across this service AND image-generator so the one
+    # RTX 4060 is never used by both at once. lock-mode=postgres uses a PostgreSQL advisory lock; BOTH
+    # apps MUST use the same lock-datasource (the shared "lock authority" DB) or nothing is serialized.
+    # Tests override lock-mode to in-process (application-test.yml). lock-key defaults to the shared
+    # platform key (GpuGuardConfig.DEFAULT_LOCK_KEY) and must stay identical across apps.
+    gpu:
+      lock-mode: postgres
+      acquire-timeout: 60s
+      poll-interval: 250ms
+      max-hold: 15m
+      lock-datasource:
+        url: jdbc:postgresql://localhost:5432/katixo_gpu
+        username: katixo
+        password: katixo
