@@ -1,5 +1,6 @@
 package com.katixo.ai.web;
 
+import com.katixo.ai.commons.gpu.GpuBusyException;
 import com.katixo.ai.support.BadInputException;
 import com.katixo.ai.support.UpstreamUnavailableException;
 import org.slf4j.Logger;
@@ -27,6 +28,14 @@ public class GlobalExceptionHandler {
         log.warn("Dependency '{}' unavailable: {}", e.getService(), e.getMessage());
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorResponse.of(503, "Service Unavailable", e.getMessage(), e.getService()));
+    }
+
+    @ExceptionHandler(GpuBusyException.class)
+    public ResponseEntity<ErrorResponse> handleGpuBusy(GpuBusyException e) {
+        log.warn("GPU busy: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ErrorResponse.of(503, "Service Unavailable",
+                        "The local GPU is busy with another job. Please retry shortly.", "gpu"));
     }
 
     @ExceptionHandler(BadInputException.class)

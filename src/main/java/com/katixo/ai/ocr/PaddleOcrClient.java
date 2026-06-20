@@ -1,8 +1,10 @@
 package com.katixo.ai.ocr;
 
+import com.katixo.ai.commons.sidecar.SidecarClient;
+import com.katixo.ai.commons.sidecar.SidecarConfig;
+import com.katixo.ai.commons.sidecar.SidecarHealth;
+import com.katixo.ai.config.AiProperties;
 import com.katixo.ai.support.UpstreamUnavailableException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -11,15 +13,25 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
-/** Talks to the local PaddleOCR FastAPI sidecar over HTTP (localhost only). */
-@Component
-public class PaddleOcrClient implements OcrClient {
+import java.time.Duration;
 
-    private static final Logger log = LoggerFactory.getLogger(PaddleOcrClient.class);
+/**
+ * Talks to the local PaddleOCR FastAPI sidecar over HTTP (localhost only). Extends the platform
+ * {@link SidecarClient} base for the shared localhost-sidecar plumbing and the {@code probe()} health
+ * contract.
+ *
+ * <p>OCR is intentionally NOT routed through the GPU guard: PaddleOCR is light and commonly CPU-bound,
+ * and the dominant GPU consumer in this service is the Ollama LLM (which is guarded).
+ */
+@Component
+public class PaddleOcrClient extends SidecarClient implements OcrClient {
 
     private final RestClient ocr;
 
-    public PaddleOcrClient(RestClient ocrRestClient) {
+    public PaddleOcrClient(RestClient ocrRestClient, AiProperties props) {
+        super(props.getOcr().getBaseUrl(),
+                SidecarConfig.noRetry("ocr", Duration.ofSeconds(5),
+                        Duration.ofSeconds(props.getOcr().getTimeoutSeconds())));
         this.ocr = ocrRestClient;
     }
 
@@ -55,5 +67,11 @@ public class PaddleOcrClient implements OcrClient {
             log.debug("OCR sidecar health check failed: {}", e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public SidecarHealth probe() {
+        return isReachable() ? SidecarHealth.up(config.name())
+                : SidecarHealth.down(config.name(), "OCR sidecar not reachable");
     }
 }

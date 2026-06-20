@@ -21,3 +21,7 @@ katixo:
       threshold: 0.75
     review:
       threshold: 0.80
+    gpu:
+      # In-process semaphore for tests: the offline/H2 suite never executes pg_advisory_lock, and no
+      # Docker/Postgres is required. Cross-process serialization is proven in katixo-ai-commons.
+      lock-mode: in-process
